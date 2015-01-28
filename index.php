@@ -72,12 +72,12 @@ function highlight_xml($s) {
 						<option value="delightapiProductInfo"<?php print ($func_selected == 'delightapiProductInfo') ? ' selected="selected"' : ''; ?>>delightapiProductInfo(param1: sku)</option>
 						<option value="delightapiProductCreate"<?php print ($func_selected == 'delightapiProductCreate') ? ' selected="selected"' : ''; ?>>delightapiProductCreate(param1: sku, param2: name, param3: description, param4: price)</option>
 						<option value="delightapiProductUpdate"<?php print ($func_selected == 'delightapiProductUpdate') ? ' selected="selected"' : ''; ?>>delightapiProductUpdate(param1: sku|product_id, param2: name, param3: description, param4: price, param5: StoreViewID)</option>
-						<option value="delightSpeedapiProductMultiple"<?php print ($func_selected == 'delightSpeedapiProductMultiple') ? ' selected="selected"' : ''; ?>>delightSpeedapiProductMultiple(param1: sku, ...)</option>
-						<option value="delightSpeedapiProductMultipleGet"<?php print ($func_selected == 'delightSpeedapiProductMultipleGet') ? ' selected="selected"' : ''; ?>>delightSpeedapiProductMultipleGet(param1: sku, param2: sku, ...)</option>
+						<option value="delightSpeedapiProductMultiple"<?php print ($func_selected == 'delightSpeedapiProductMultiple') ? ' selected="selected"' : ''; ?>>delightSpeedapiProductMultiple(param1: sku, param2: name, param3: description, param4: price)</option>
+						<option value="delightSpeedapiProductMultipleGet"<?php print ($func_selected == 'delightSpeedapiProductMultipleGet') ? ' selected="selected"' : ''; ?>>delightSpeedapiProductMultipleGet(param1: sku, param2: attributes, param3: count, param4: offset)</option>
+						<option value="delightSpeedapiProductDelete"<?php print ($func_selected == 'delightSpeedapiProductDelete') ? ' selected="selected"' : ''; ?>>delightSpeedapiProductDelete(param1: id, param2: id, param3: id, param4: id, param5: id)</option>
 						<option value="delightSpeedapiAdminSetIndexerState"<?php print ($func_selected == 'delightSpeedapiAdminSetIndexerState') ? ' selected="selected"' : ''; ?>>delightSpeedapiAdminSetIndexerState(param1: real_time|manual|...)</option>
 						<option value="delightSpeedapiAdminReindex"<?php print ($func_selected == 'delightSpeedapiAdminReindex') ? ' selected="selected"' : ''; ?>>delightSpeedapiAdminReindex()</option>
 						<option value="delightSpeedapiAdminFlushCache"<?php print ($func_selected == 'delightSpeedapiAdminFlushCache') ? ' selected="selected"' : ''; ?>>delightSpeedapiAdminFlushCache()</option>
-						<option value="xx"<?php print ($func_selected == 'xx') ? ' selected="selected"' : ''; ?>>xx</option>
 						<option value="xx"<?php print ($func_selected == 'xx') ? ' selected="selected"' : ''; ?>>xx</option>
 						<option value="xx"<?php print ($func_selected == 'xx') ? ' selected="selected"' : ''; ?>>xx</option>
 						<option value="xx"<?php print ($func_selected == 'xx') ? ' selected="selected"' : ''; ?>>xx</option>
@@ -112,7 +112,14 @@ if (isset($_REQUEST['host'])) {
 		$client->__setCookie('XDEBUG_SESSION_START', 'kdev');
 		$client->__setCookie('XDEBUG_SESSION', 'kdev');
 		$session = $client->login($apiUser, $apiKey);
-	
+		
+		/*
+		print('<pre>');
+		print_r($client->__getFunctions());
+		print('</pre>');
+		exit();
+		*/
+		
 		$product_attributes = array(
 			'attributes' => array(
 				'categories',
@@ -165,6 +172,7 @@ if (isset($_REQUEST['host'])) {
 				break;
 			case 'delightapiProductCreate':
 				$productData = array(
+					'website' => '1',
 					'name' => empty($param2) ? 'Product Name' : $param2,
 					'description' => empty($param3) ? 'Product Description' : $param3,
 					'short_description' => empty($param3) ? 'Product Description Short' : $param3 . ' Short',
@@ -178,6 +186,7 @@ if (isset($_REQUEST['host'])) {
 				break;
 			case 'delightapiProductUpdate':
 				$productData = array(
+					'website' => '1',
 					'name' => empty($param2) ? 'Product Name' : $param2,
 					'description' => empty($param3) ? 'Product Description' : $param3,
 					'short_description' => empty($param3) ? 'Product Description Short' : $param3 . ' Short',
@@ -191,10 +200,58 @@ if (isset($_REQUEST['host'])) {
 				break;
 				
 			case 'delightSpeedapiProductMultiple':
-				$result = $client->delightSpeedapiProductMultiple($session, !empty($param1) ? $param1 : 'ABC 123', 0, $product_attributes, 'sku');
+				$productList = array();
+				for ($i = 0; $i < 5; $i++) {
+					$productList[] = array(
+						'set' => '4', // This is the attribute set which is needed
+						'type' => 'simple', // This is the product type which is needed
+						'website' => '1',
+						'sku' => (!empty($param1) ? $param1 : 'ABC 123') . $_SERVER['REQUEST_TIME'] . '-' . $i,
+						'coast' => empty($param4) ? '321' : $param4,
+						'product_data' => array((object)array(
+							'website' => '1',
+							'name' => empty($param2) ? 'Product Name' : $param2,
+							'description' => empty($param3) ? 'Product Description' : $param3,
+							'short_description' => empty($param3) ? 'Product Description Short' : $param3 . ' Short',
+							'status' => '1',
+						)),
+						'website_prices' => array((object)array(
+							'website' => '1',
+							'price' => empty($param4) ? '321' : $param4,
+						)),
+						'meta_informations'=> array((object)array(
+							'website' => '1',
+							'meta_title' => empty($param2) ? 'Product Name' : $param2,
+							'meta_description' => empty($param3) ? 'Product Description Short' : $param3 . ' Short',
+							'meta_keywords' => 'some,product,keyowrds,in,meta,headers',
+						)),
+					);
+				}
+				$result = $client->delightSpeedapiProductMultiple($session, $productList);
 				break;
 			case 'delightSpeedapiProductMultipleGet':
-				$result = $client->delightSpeedapiProductMultipleGet($session, !empty($param1) ? $param1 : 'ABC 123', 0, $product_attributes, 'sku');
+				$attributes = explode(',', !empty($param2) ? $param2 : 'sku,name,description,coast,website,meta_informations');
+				$filters = empty($param1) ? array() : array('sku' => $param1);
+				$result = $client->delightSpeedapiProductMultipleGet($session, $attributes, (object) $filters, !empty($param4) ? (int)$param4 : 0, !empty($param3) ? (int)$param3 : 0);
+				break;
+			case 'delightSpeedapiProductDelete':
+				$list = array();
+				if (!empty($param1)) {
+					$list[] = $param1;
+				}
+				if (!empty($param2)) {
+					$list[] = $param2;
+				}
+				if (!empty($param3)) {
+					$list[] = $param3;
+				}
+				if (!empty($param4)) {
+					$list[] = $param4;
+				}
+				if (!empty($param5)) {
+					$list[] = $param5;
+				}
+				$result = $client->delightSpeedapiProductDelete($session, $list, 'id');
 				break;
 			case 'delightSpeedapiAdminSetIndexerState':
 				$result = $client->delightSpeedapiAdminSetIndexerState($session, !empty($param1) ? $param1 : 'manual');
@@ -214,6 +271,7 @@ if (isset($_REQUEST['host'])) {
 		print_r($e->getMessage());
 		print('</pre></fieldset>');
 	}
+	
 	$xmlRequest = new SimpleXMLElement($client->__getLastRequest());
 	$xmlResponse = new SimpleXMLElement($client->__getLastResponse());
 	$client->endSession($session);
