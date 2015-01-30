@@ -172,7 +172,7 @@ if (isset($_REQUEST['host'])) {
 				break;
 			case 'delightapiProductCreate':
 				$productData = array(
-					'website' => '1',
+					'website' => 'base',
 					'name' => empty($param2) ? 'Product Name' : $param2,
 					'description' => empty($param3) ? 'Product Description' : $param3,
 					'short_description' => empty($param3) ? 'Product Description Short' : $param3 . ' Short',
@@ -186,7 +186,7 @@ if (isset($_REQUEST['host'])) {
 				break;
 			case 'delightapiProductUpdate':
 				$productData = array(
-					'website' => '1',
+					'website' => 'base',
 					'name' => empty($param2) ? 'Product Name' : $param2,
 					'description' => empty($param3) ? 'Product Description' : $param3,
 					'short_description' => empty($param3) ? 'Product Description Short' : $param3 . ' Short',
@@ -205,26 +205,78 @@ if (isset($_REQUEST['host'])) {
 					$productList[] = array(
 						'set' => '4', // This is the attribute set which is needed
 						'type' => 'simple', // This is the product type which is needed
-						'website' => '1',
+						'weight' => '0',
 						'sku' => (!empty($param1) ? $param1 : 'ABC 123') . $_SERVER['REQUEST_TIME'] . '-' . $i,
-						'coast' => empty($param4) ? '321' : $param4,
+						'tax_class_id' => '2',
+						'website_ids' => array('1'),
+						'category_ids' => array('1'),
 						'product_data' => array((object)array(
-							'website' => '1',
+							'website' => 'base',
 							'name' => empty($param2) ? 'Product Name' : $param2,
 							'description' => empty($param3) ? 'Product Description' : $param3,
 							'short_description' => empty($param3) ? 'Product Description Short' : $param3 . ' Short',
 							'status' => '1',
 						)),
-						'website_prices' => array((object)array(
-							'website' => '1',
+						'price' => empty($param4) ? '321' : $param4,
+						/*'website_prices' => array((object)array(
+							'website' => 'base',
 							'price' => empty($param4) ? '321' : $param4,
-						)),
-						'meta_informations'=> array((object)array(
-							'website' => '1',
+						)),*/
+						'meta_title' => empty($param2) ? 'Product Name' : $param2,
+						'meta_description' => empty($param3) ? 'Product Description Short' : $param3 . ' Short',
+						'meta_keyword' => 'some,product,keyowrds,in,meta,headers',
+						/*'meta_informations'=> array((object)array(
+							'website' => 'base',
 							'meta_title' => empty($param2) ? 'Product Name' : $param2,
 							'meta_description' => empty($param3) ? 'Product Description Short' : $param3 . ' Short',
-							'meta_keywords' => 'some,product,keyowrds,in,meta,headers',
-						)),
+							'meta_keyword' => 'some,product,keyowrds,in,meta,headers',
+						)),*/
+						'media_list' => array(
+							(object)array(
+								'file' => (object)array(
+									'content' => 'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAK3RFWHRDcmVhdGlvbiBUaW1lAERpIDE2IEF1ZyAyMDA1IDIyOjU0OjMwICswMTAwXSnWnQAAAAd0SU1FB9MKBhQLIhoeEN8AAAAJcEhZcwAACvAAAArwAUKsNJgAAAAEZ0FNQQAAsY8L/GEFAAACaUlEQVR42n2Ty0tUcRTHv/fnvMxRHB8lFU4PUJGKIiiiVu7aFP0B7UI3LYo2tWtT+ygIAkGICEoINxqFBI6mFEYiaunYNNKo89QZ7525Xu/cX9+bM3Rzhg58+D3O43d+53AUOERKqSRHlN4iXH3Cd/CUafAcT38Lr7qe332i9Idj2Q2amagmUg4IfRSD+tIVKc0PZEhK7bGUm7dl8uNJ+fI+3rcE6jto6nX61ZQ3ty4N3/QEr97xHr3HU4zvpEga2M5hX2M9DtTpx9SNjDI5V1ygQY5Ytp8oB9ix0Otpv0GHGaZToMZ+yMU9TQwDrd1ncaFLXObladJQ9hN/cwl0wsozQBTQ41yJuQUUdaJRH8ShNuUILTtJfdnNVd7oBX0LRrgJ20lIU9u9LDKgmSFZKCIAVZW8QCPxVGQQWyuMIzH85+9SXSFRSG0VVjYKxdcBmZnC1FxxttQFWRHg83Lw4ezEZBp6DGJnHTLPVSZoTltTxejgkPpsRCzuVhj5ii6MTGQyTY0t4cN1sWvNbbXCzDITacIyVHydnLH6HrlfL//S12g6RiJ23f8tIsvwYCDxLr4up+WOhEH1tmZCqXHj+xIW5n/k7VcniN3GQkURS//KJbTW/rdv5s/72UWpAFus54uxBvYW0ZLzprMGzgC2WOPp66Hg8S6c6W5HJBLBTGoF0z+f8vXcMvUZuzdOB7EnANr2+5OF7EpcuATcXg9qips5vaAZVK07Uy+LUmUsRE9Pzzmv1zvo8/n8oVBoKJVK2UV7RRb3DlO1ALb4yQlykbjJJ/KFZJ3//18A+76WNJe+aY+xitIAOeU3NyMZIeKXGz4AAAAASUVORK5CYII=',
+									'mime' => 'image/png',
+								),
+								'types' => array('image', 'small_image'),
+								'label' => 'Base Image and Small Image',
+								'remove' => false,
+								'exclude' => false,
+								/*'website_data' => array(
+									(object)array(
+										'website' => 'base',
+										'label' => 'Image and Smallimage',
+										'exclude' => false,
+										'disable' => false,
+										'sort_order' => 1,
+										'use_as_image' => true,
+										'use_as_thumbnail' => false,
+										'use_as_smallimage' => true
+									),
+								),*/
+							),
+							(object)array(
+								'file' => (object)array(
+									'content' => 'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAK3RFWHRDcmVhdGlvbiBUaW1lAEZyIDE0IEZlYiAyMDAzIDEwOjU2OjA4ICswMTAwuzpJkAAAAAd0SU1FB9MKBhQLKPrL+cEAAAAJcEhZcwAACvAAAArwAUKsNJgAAAAEZ0FNQQAAsY8L/GEFAAACmElEQVR42n2SS0wTQRjH/7O7fWSXpaWl5VGwotYEw0UTjQc0Pi4iRr15M3rwYDwaY9CD8eLNGBNvRG8kaogxhIMmGgFjQBBRIdZqCaSAIG23LdDHdru7zrRrJBCY5Leb+eZ7zn8ItlpXRiUUkg3IFYOIK7uRToegpEJ8MtGmd5wp4cXpE9QrKWyMu3NrqPbeT2NR4+08RD+Bvgo4ioBNBbgsiE5M6OoidT1FecVtTJDLLfF6cZUHjP9GwoK0WWTD/R7v9DNmoTRRnJs6KGkqAScBs+/6EI/ksTSVRfy7hmJao8eKd1+7tgxylNVi/psSlJedmvtuT8IorNDdPAukJCiZ1tbjbWGNx/YJKn1n6GeEEqHkKUXWYGPDriDm2QSVGbdLwFpOlWl6eNYVEDtVw8yPzyTnYPPBuodNCQgxCoSUj8yywb3/yd3zncGu6YRKphYLGF5zmxAFpoLI/CsJmh51+IPSJdPOObrH/ow4QjvYgDwcLdLJY/U3IimdDMdKQLUbcDmIGxmSprtKBzvvX754IfR4IQ8yEcthlRfPcXaRljdliHVSUhOEj791wE/bliQ4RRskXSukre65I+2BrgzvIG+jKhSnCwg0oka20/pcNVIjqYFIdtSQqgBZhq2mGgda/ViY6P9sqVDi0rogvonSS671AF4v4PHAF/CZ1ngmZnqvcqby2lNvLzQ216SG+7tfYvABk/QXZU2YjMWfotlzHVUyBJeMQ3tcGP8wMAQtq5ali/bMGdGemwq4wwqMILUxdX5QPrF3wUMZ+wpPi1NuqPP7XEI2/L53sPT82hyM0jfqMGVJSUc2Y9b+CyVMWWYjEEtK9q4PUvaye6HMUkatv/pP4g2Sm+uNNlRkqbJsWcrKuuAt11+yD/ahi0x1zQAAAABJRU5ErkJggg==',
+									'mime' => 'image/png',
+								),
+								'types' => array('thumbnail'),
+								'label' => 'Thumbnail image',
+								'remove' => false,
+								'exclude' => false,
+								/*'website_data' => array(
+									(object)array(
+										'website' => 'base',
+										'label' => 'Thumbnail image',
+										'exclude' => false,
+										'disable' => false,
+										'sort_order' => 2,
+										'use_as_image' => false,
+										'use_as_thumbnail' => true,
+										'use_as_smallimage' => false
+									),
+								),*/
+							),
+						),
 					);
 				}
 				$result = $client->delightSpeedapiProductMultiple($session, $productList);
@@ -251,7 +303,7 @@ if (isset($_REQUEST['host'])) {
 				if (!empty($param5)) {
 					$list[] = $param5;
 				}
-				$result = $client->delightSpeedapiProductDelete($session, $list, 'id');
+				$result = $client->delightSpeedapiProductDelete($session, $list, 'sku');
 				break;
 			case 'delightSpeedapiAdminSetIndexerState':
 				$result = $client->delightSpeedapiAdminSetIndexerState($session, !empty($param1) ? $param1 : 'manual');
@@ -285,6 +337,11 @@ if (isset($_REQUEST['host'])) {
 	$response->formatOutput = true;
 	$response->preserveWhiteSpace = false;
 	$response->loadXML($xmlResponse->asXML());
+
+	// Save Request and Response as XML in ./tmp/
+	$time = date('Y-m-d_H-i-s', $_SERVER['REQUEST_TIME']);
+	$request->save('./tmp/' . $func . '_request_' . $time . '.xml');
+	$response->save('./tmp/' . $func . '_response_' . $time . '.xml');
 ?>
 	<fieldset>
 		<legend>Request</legend>
